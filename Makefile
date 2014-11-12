@@ -16,6 +16,7 @@ MESOS_SLAVE_OPTS=--name mesos-slave \
 	--privileged \
 	--link zookeeper:zookeeper \
 	--link registry:registry \
+	-h mesos-slave \
 	-e MESOS_MASTER=zk://zookeeper:2181/mesos \
 	-e MESOS_CONTAINERIZERS="docker,mesos" \
 	-e MESOS_EXECUTOR_REGISTRATION_TIMEOUT="5mins" \
