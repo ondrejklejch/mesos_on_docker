@@ -3,6 +3,7 @@ REGISTRY_OPTS=--name registry \
 	-e MIRROR_SOURCE=https://registry-1.docker.io \
 	-e MIRROR_SOURCE_INDEX=https://index.docker.io \
 	-e MIRROR_TAGS_CACHE_TTL=172800 \
+	-e GUNICORN_OPTS=[--preload] \
 	-v ${CURDIR}/registry:/tmp/registry/
 
 MESOS_MASTER_OPTS=--name mesos-master \
