@@ -29,12 +29,19 @@ MARATHON_OPTS=--name marathon \
 
 MARATHON_CMD=/opt/marathon/bin/start --master zk://zookeeper:2181/mesos --zk_hosts zookeeper:2181 --task_launch_timeout 300000
 
+HAPROXY_OPTS=--name haproxy \
+	--link marathon:marathon \
+	--link mesos-slave:mesos-slave \
+	-p 80:80 \
+	-e MARATHON_URL=marathon:8080
+
 build:
 	docker build -t choko/mesos mesos/
 	docker build -t choko/mesos-master mesos-master/
 	docker build -t choko/mesos-slave mesos-slave/
 	docker build -t choko/marathon marathon/
 	docker build -t choko/zookeeper zookeeper/
+	docker build -t choko/haproxy haproxy/
 
 pull:
 	docker pull registry:0.9.0
@@ -42,6 +49,7 @@ pull:
 	docker pull choko/marathon
 	docker pull choko/mesos-master
 	docker pull choko/mesos-slave
+	docker pull choko/haproxy
 
 run:
 	docker run ${REGISTRY_OPTS} -d registry
@@ -49,6 +57,9 @@ run:
 	docker run ${MESOS_MASTER_OPTS} -d choko/mesos-master
 	docker run ${MARATHON_OPTS} -d choko/marathon ${MARATHON_CMD}
 	docker run ${MESOS_SLAVE_OPTS} -d choko/mesos-slave
+
+run_haproxy:
+	docker run ${HAPROXY_OPTS} -i -t --rm choko/haproxy
 
 stop:
 	docker rm `docker kill -s 9 registry zookeeper mesos-master mesos-slave marathon`
