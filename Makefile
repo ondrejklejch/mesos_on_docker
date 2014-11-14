@@ -15,6 +15,7 @@ MESOS_MASTER_OPTS=--name mesos-master \
 
 MESOS_SLAVE_OPTS=--name mesos-slave \
 	--privileged \
+	--restart=always \
 	--link zookeeper:zookeeper \
 	--link registry:registry \
 	-h mesos-slave \

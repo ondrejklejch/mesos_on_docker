@@ -72,7 +72,6 @@ do
  		;;
  	# Nuke everything else
  	*)
-		sleep 5
  		eval exec "$FD>&-"
  		;;
  	esac
