@@ -96,5 +96,6 @@ else
  		docker -d $DOCKER_DAEMON_ARGS &
  	fi
 
-	exec $1
+	IP=`ifconfig eth0 | sed -n 's/addr://g;s/.*inet \([^ ]*\) .*/\1/p'`
+	exec mesos-slave --ip=$IP --hostname=$IP
 fi

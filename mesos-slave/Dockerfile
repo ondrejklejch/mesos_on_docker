@@ -14,11 +14,11 @@ RUN echo deb https://get.docker.io/ubuntu docker main > /etc/apt/sources.list.d/
   && apt-get install -qqy lxc-docker
 
 # Install the magic wrapper.
-ADD ./wrapdocker /usr/local/bin/wrapdocker
-RUN chmod +x /usr/local/bin/wrapdocker
+ADD ./run.sh /usr/local/bin/run.sh
+RUN chmod +x /usr/local/bin/run.sh
 
 # Define additional metadata for our image.
 VOLUME /var/lib/docker
 
 EXPOSE 5051
-CMD wrapdocker mesos-slave
+CMD run.sh
