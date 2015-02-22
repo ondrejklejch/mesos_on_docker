@@ -12,7 +12,7 @@ marathon_url = os.environ['MARATHON_URL']
 apps = requests.get('http://%s/v2/apps' % marathon_url).json()
 apps_to_load_balance = []
 for app in apps['apps']:
-	if 'portMappings' in app['container']['docker']:
+	if 'portMappings' in app['container']['docker'] and app['container']['docker']['portMapping'] != None:
 		for portMapping in app['container']['docker']['portMappings']:
 			if portMapping['containerPort'] == 80:
 				apps_to_load_balance.append(app['id'])
