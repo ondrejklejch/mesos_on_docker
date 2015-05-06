@@ -34,7 +34,9 @@ HAPROXY_OPTS=--name haproxy \
 	--link marathon:marathon \
 	--link mesos-slave:mesos-slave \
 	-p 80:80 \
-	-e MARATHON_URL=marathon:8080
+	-e MARATHON_URL=marathon:8080 \
+	-e MARATHON_LOGIN="login" \
+	-e MARATHON_PASSWORD="password"
 
 build:
 	docker build -t choko/mesos mesos/

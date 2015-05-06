@@ -9,15 +9,17 @@ def id_to_url(appId):
 	return ".".join(reversed(appId[1:].split('/')))
 
 marathon_url = os.environ['MARATHON_URL']
-apps = requests.get('http://%s/v2/apps' % marathon_url).json()
+login = os.environ['MARATHON_LOGIN']
+password = os.environ['MARATHON_PASSWORD']
+apps = requests.get('http://%s/v2/apps' % marathon_url, auth=(login, password)).json()
 apps_to_load_balance = []
 for app in apps['apps']:
-	if 'portMappings' in app['container']['docker'] and app['container']['docker']['portMapping'] != None:
+	if 'portMappings' in app['container']['docker'] and app['container']['docker']['portMappings'] != None:
 		for portMapping in app['container']['docker']['portMappings']:
 			if portMapping['containerPort'] == 80:
 				apps_to_load_balance.append(app['id'])
 
-tasks = requests.get('http://%s/v2/tasks' % marathon_url).json()
+tasks = requests.get('http://%s/v2/tasks' % marathon_url, headers={'Accept': 'application/json'}, auth=(login, password)).json()
 urls_per_app = defaultdict(list)
 for task in tasks["tasks"]:
 	if task["appId"] in apps_to_load_balance:
@@ -40,12 +42,15 @@ defaults
         option  dontlognull
         option forwardfor
         option http-server-close
-	timeout connect		5000
-	timeout client		50000
-	timeout server		50000
+	timeout connect		10000
+	timeout client		60000
+	timeout server		60000
 
 frontend http-in
 	bind *:80
+
+        acl demo hdr(host) demo.cloudasr.com
+        redirect location http://www.cloudasr.com/demo if demo
 	"""
 
 for appId in urls_per_app.keys():
@@ -66,16 +71,5 @@ backend %s
 
 	for (i, url) in enumerate(urls):
 		print "	server node%d %s cookie A check" % (i, url)
-
-
-
-
-
-
-
-
-
-
-
 
 
