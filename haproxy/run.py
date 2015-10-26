@@ -48,8 +48,10 @@ defaults
 frontend http-in
 	bind *:80
 
-	acl demo hdr(host) demo.cloudasr.com
-	redirect location http://www.cloudasr.com/demo if demo
+	acl demo hdr(host) -i demo.cloudasr.com
+	redirect location http://www.cloudasr.com/demo code 301 if demo
+	acl no_www hdr(host) -i cloudasr.com
+	redirect prefix http://www.cloudasr.com code 301 if no_www
 """
 
 	for appId in urls_per_app.keys():
