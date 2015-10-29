@@ -70,8 +70,8 @@ backend %s
 	cookie SERVERID insert indirect nocache
 """ % (id_to_backend(appId))
 
-	for (i, url) in enumerate(urls):
-		config += "	server node%d %s cookie A check\n" % (i, url)
+		for (i, url) in enumerate(urls):
+			config += "	server node%d %s cookie A check\n" % (i, url)
 
 	return config
 
