@@ -33,6 +33,7 @@ global
 	maxconn 4096
 	user haproxy
 	group haproxy
+	tune.ssl.default-dh-param 4096
 
 defaults
 	log     global
@@ -45,6 +46,13 @@ defaults
 	timeout client		60000
 	timeout server		60000
 
+frontend https-in
+	bind *:443 ssl crt /etc/haproxy/www.cloudasr.com.pem crt /etc/haproxy/api.cloudasr.com.pem
+	reqadd X-Forwarded-Proto:\ https
+
+	use_backend _cloudasr.com_www if { hdr(host) -i www.cloudasr.com }
+	use_backend _cloudasr.com_api if { hdr(host) -i api.cloudasr.com }
+
 frontend http-in
 	bind *:80
 
@@ -52,6 +60,8 @@ frontend http-in
 	redirect location http://www.cloudasr.com/demo code 301 if demo
 	acl no_www hdr(host) -i cloudasr.com
 	redirect prefix http://www.cloudasr.com code 301 if no_www
+	redirect scheme https code 301 if { hdr(host) -i www.cloudasr.com } !{ ssl_fc }
+	redirect scheme https code 301 if { hdr(host) -i api.cloudasr.com } !{ ssl_fc }
 """
 
 	for appId in urls_per_app.keys():
