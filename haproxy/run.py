@@ -92,7 +92,12 @@ if __name__ == '__main__':
 
 	last_config = None
 	while True:
-		config = create_config(marathon_url, login, password)
+		try:
+			config = create_config(marathon_url, login, password)
+		except Exception e:
+			print "%s Marathon is not accessible" % time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+			time.sleep(10)
+			continue
 
 		if last_config != config:
 			with open('/etc/haproxy/haproxy.cfg', 'w') as f:
