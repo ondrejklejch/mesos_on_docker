@@ -94,7 +94,7 @@ if __name__ == '__main__':
 	while True:
 		try:
 			config = create_config(marathon_url, login, password)
-		except Exception e:
+		except Exception, e:
 			print "%s Marathon is not accessible" % time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 			time.sleep(10)
 			continue
